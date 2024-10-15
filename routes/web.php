@@ -110,9 +110,19 @@ Route::group(['middleware' => 'auth'], function () {
 	)->name('describe-donation-make');
 
 	//purchase
-	Route::get('purchase-management', function () {
-		return view('pages.purchase.purchase-management');
-	})->name('purchase-management');
+
+	Route::get('purchase-management',
+		[DonationsController::class, 'getPurchases']
+	)->name('purchase-management');
+
+    Route::get('purchase-describe/{purchaseId}',
+		[DonationsController::class, 'getPurchase']
+	)->name('purchase-describe');
+
+	Route::post(
+		'/new-purchase',
+		[DonationsController::class, 'newPurchase']
+	)->name('new-purchase');
 
 	
 	Route::get('static-sign-in', function () {

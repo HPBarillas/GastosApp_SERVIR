@@ -104,7 +104,8 @@
                         <div class=" me-3 my-3 text-end">
                             <a id="edit-item" name="edit-item" class="btn bg-gradient-dark mb-0" type="button" data-bs-toggle="modal" data-bs-target="#new-donation-modal">
                                 <i class="material-icons text-sm">add</i>&nbsp;&nbsp;Nueva donacion</a>
-                        </div>                        <div class="card-body px-0 pb-2">
+                        </div>
+                        <div class="card-body px-0 pb-2">
                             <div class="table-responsive p-0">
                                 <table class="table align-items-center mb-0">
                                     <thead>

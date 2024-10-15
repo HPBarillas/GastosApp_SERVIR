@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 
 use DB;
 use App\Models\ProjectsServicesDonations;
+use App\Models\PurchaseHeader;
+use App\Models\PurchaseDetail;
 use App\Models\Organization;
 use App\Models\Countries;
 use App\Models\Donations;
@@ -36,6 +38,10 @@ class DonationsController extends Controller
     
     public function getAllServices() {
         return Services::where([['active', '=', 'Y']])->get();
+    }
+    
+    public function getAllProjects() {
+        return Projects::where([['active', '=', 'Y']])->get();
     }
     
     public function getProjects(){
@@ -79,6 +85,28 @@ class DonationsController extends Controller
         return view('pages.donations.donations-management', ['donations' => $donations, 'projectsServices' => $projectsServices]);
     }
 
+    public function getPurchases(){
+        $purchases = DB::table('purchase_headers')
+        ->join('projects', 'purchase_headers.projectId', '=', 'projects.id')
+        ->select('purchase_headers.id', 'purchase_headers.description', 'purchase_headers.projectId', 'purchase_headers.proveedor', 'projects.project', 'purchase_headers.status', 'purchase_headers.dueDate', 'purchase_headers.created_at')
+            ->orderBy('purchase_headers.proveedor', 'ASC')->get();
+
+        return view('pages.purchase.purchase-management', ['purchases' => $purchases, 'projects' => $this->getAllProjects()]);
+    }
+    
+    public function getPurchase($id){
+        // $project = PurchaseHeader::where([['id', '=', $id]])->get();
+        
+        $purchases_details = DB::table('purchase_details')
+        ->join('purchase_headers', 'purchase_details.headerId', '=', 'purchase_headers.id')
+        ->join('projects_services_donations', 'purchase_details.projectServiceDonationId', '=', 'projects_services_donations.id')
+        ->select('*')
+        ->where('purchase_details.headerId', '=', $id)
+            ->orderBy('purchase_details.id', 'ASC')->get();
+
+        return view('pages.purchase.purchase-describe', ['purchases_details' => $purchases_details, 'services' => $this->getAllServices() ]);
+    }
+    
     public function newProject(Request $request){
         $attributes = request()->validate([
             'organizationId' => ['required'],
